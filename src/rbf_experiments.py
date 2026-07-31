@@ -129,37 +129,63 @@ def fig_receptive_fields():
 # Figure 0 — architecture schematic (input -> radial hidden -> linear output)
 # ---------------------------------------------------------------------------
 def fig_architecture():
-    fig, ax = plt.subplots(figsize=(6.6, 3.4))
+    fig, ax = plt.subplots(figsize=(6.9, 2.9))
     ax.axis("off")
-    layers = {0.1: (["$x_1$", "$x_2$", "$x_d$"], "#8A97A8", "Input"),
-              0.5: ([r"$\varphi_1$", r"$\varphi_2$", r"$\varphi_3$",
-                     r"$\varphi_m$"], BLUE, "Radial hidden\n(K-means centers)"),
-              0.9: (["$\\hat{y}$"], ORANGE, "Linear output\n(least squares)")}
-    pos = {}
-    for x, (nodes, col, _) in layers.items():
-        ys = np.linspace(0.75, 0.25, len(nodes))
-        for j, (n, y) in enumerate(zip(nodes, ys)):
-            if n in ("$x_d$", r"$\varphi_m$") and j == len(nodes) - 1:
-                ax.text(x, (ys[-2] + y) / 2 + 0.02, r"$\vdots$", ha="center",
-                        va="center", fontsize=14)
-            c = plt.Circle((x, y), 0.045, color=col, ec="white", zorder=3)
-            ax.add_patch(c)
-            ax.text(x, y, n, ha="center", va="center", color="white",
-                    fontsize=8, zorder=4)
-            pos[(x, j)] = (x, y)
-    # edges
-    xs = list(layers.keys())
-    for a, b in [(xs[0], xs[1]), (xs[1], xs[2])]:
-        na = len(layers[a][0]); nb = len(layers[b][0])
-        ya = np.linspace(0.75, 0.25, na); yb = np.linspace(0.75, 0.25, nb)
-        for i in range(na):
-            for k in range(nb):
-                ax.plot([a, b], [ya[i], yb[k]], color=GREY, lw=0.4,
-                        alpha=0.35, zorder=1)
-    for x, (_, _, lab) in layers.items():
-        ax.text(x, 0.06, lab, ha="center", va="center", fontsize=9,
-                fontweight="bold", color=INK)
-    ax.set_xlim(0, 1); ax.set_ylim(0, 0.9)
+    GREYN = "#8A97A8"
+    xin, xhid, xout = 0.11, 0.50, 0.89
+    yin = [0.70, 0.50, 0.28]
+    yhid = [0.80, 0.61, 0.42, 0.18]
+    yout = 0.49
+    # edges: input -> hidden (each unit compares x to its centre), light
+    for ya in yin:
+        for yb in yhid:
+            ax.plot([xin, xhid], [ya, yb], color=GREYN, lw=0.5, alpha=0.30, zorder=1)
+    # edges: hidden -> output (learned weights), darker
+    for yb in yhid:
+        ax.plot([xhid, xout], [yb, yout], color=INK2, lw=1.0, alpha=0.55, zorder=1)
+    ax.text((xhid + xout) / 2, (yhid[0] + yout) / 2 + 0.03, r"$w_1$",
+            fontsize=9, color=INK, ha="center")
+    ax.text((xhid + xout) / 2, (yhid[-1] + yout) / 2 - 0.04, r"$w_m$",
+            fontsize=9, color=INK, ha="center")
+    # input nodes
+    for y, lab in zip(yin, ["$x_1$", "$x_2$", "$x_d$"]):
+        ax.add_patch(plt.Circle((xin, y), 0.030, facecolor=GREYN,
+                                edgecolor="white", lw=1.2, zorder=3))
+        ax.text(xin, y, lab, ha="center", va="center", color="white",
+                fontsize=9, zorder=4)
+    ax.text(xin, (yin[1] + yin[2]) / 2, r"$\vdots$", ha="center", va="center",
+            fontsize=13, color=INK2)
+    # hidden nodes with a radial motif (concentric rings)
+    for y, lab in zip(yhid, ["$\\varphi_1$", "$\\varphi_2$", "$\\varphi_3$", "$\\varphi_m$"]):
+        ax.add_patch(plt.Circle((xhid, y), 0.048, facecolor="#eaf1fb",
+                                edgecolor=BLUE, lw=1.6, zorder=3))
+        ax.add_patch(plt.Circle((xhid, y), 0.028, facecolor="none",
+                                edgecolor=BLUE, lw=0.8, alpha=0.55, zorder=4))
+        ax.text(xhid, y, lab, ha="center", va="center", color=BLUE,
+                fontsize=8.5, fontweight="bold", zorder=5)
+    ax.text(xhid, (yhid[2] + yhid[3]) / 2, r"$\vdots$", ha="center",
+            va="center", fontsize=13, color=INK2)
+    # output node
+    ax.add_patch(plt.Circle((xout, yout), 0.040, facecolor=ORANGE,
+                            edgecolor="white", lw=1.2, zorder=3))
+    ax.text(xout, yout, r"$\hat{y}$", ha="center", va="center",
+            color="white", fontsize=10, zorder=4)
+    # phase annotations (top)
+    ax.plot([xin, xhid - 0.02], [0.95, 0.95], color=INK2, lw=0.8)
+    ax.text((xin + xhid) / 2, 0.99, "Phase 1 \u00b7 K-means centres $c_j$ (unsupervised)",
+            ha="center", va="bottom", fontsize=8, color=INK2)
+    ax.plot([xhid + 0.02, xout], [0.95, 0.95], color=INK2, lw=0.8)
+    ax.text((xhid + xout) / 2, 0.99, "Phase 2 \u00b7 least-squares weights $w_j$",
+            ha="center", va="bottom", fontsize=8, color=INK2)
+    # layer captions (bottom)
+    ax.text(xin, 0.015, "Input  $\\mathbf{x}\\in\\mathbb{R}^{d}$", ha="center",
+            va="center", fontsize=9, fontweight="bold", color=INK)
+    ax.text(xhid, 0.015, "Radial hidden  "
+            "$\\varphi_j(\\mathbf{x})=e^{-\\|\\mathbf{x}-\\mathbf{c}_j\\|^2/2\\sigma_j^2}$",
+            ha="center", va="center", fontsize=8.5, fontweight="bold", color=INK)
+    ax.text(xout, 0.015, "Output  $\\hat{y}=\\sum_j w_j\\varphi_j$", ha="center",
+            va="center", fontsize=9, fontweight="bold", color=INK)
+    ax.set_xlim(-0.02, 1.02); ax.set_ylim(-0.03, 1.08)
     fig.tight_layout()
     fig.savefig(f"{FIGDIR}/fig_architecture.png", bbox_inches="tight")
     plt.close(fig)

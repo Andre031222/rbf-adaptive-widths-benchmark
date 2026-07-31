@@ -48,11 +48,13 @@ def holm(pairs):
 
 
 def cd_diagram(avg_ranks, nemenyi):
-    fig, ax = plt.subplots(figsize=(7.2, 2.4))
+    fig, ax = plt.subplots(figsize=(6.8, 2.3))
+    palette = {m: "#3a3a3a" for m in avg_ranks.index}
     sp.critical_difference_diagram(
         avg_ranks, nemenyi, ax=ax,
-        label_props={"fontsize": 9},
-        marker_props={"s": 55})
+        label_props={"fontsize": 9.5},
+        marker_props={"s": 55, "color": "#3a3a3a"},
+        color_palette=palette)
     ax.set_title("Critical-difference diagram (Nemenyi, $\\alpha=0.05$) — "
                  "lower rank = better", fontsize=9.5, fontweight="bold",
                  color=INK, loc="left")
