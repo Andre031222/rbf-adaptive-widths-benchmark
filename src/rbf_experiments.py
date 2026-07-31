@@ -101,12 +101,13 @@ def fig_receptive_fields():
     xs = np.linspace(-3, 3, 500)
     centers = [-2.0, -0.5, 1.0, 2.2]
     cols = [BLUE, ORANGE, AQUA, YELLOW]
+    lss = ["-", "--", "-.", ":"]
     sig = 0.6
     fig, ax = plt.subplots(figsize=(6.4, 3.2))
     for i, c in enumerate(centers):
         y = np.exp(-(xs - c) ** 2 / (2 * sig ** 2))
         ax.fill_between(xs, y, color=cols[i], alpha=0.13, lw=0)
-        ax.plot(xs, y, color=cols[i], lw=2.4)
+        ax.plot(xs, y, color=cols[i], ls=lss[i], lw=2.4)
         ax.plot([c], [1.0], marker="o", ms=6, color=cols[i],
                 mec="white", mew=1.2, zorder=4)
         ax.annotate(f"$c_{i+1}$", (c, 1.0), textcoords="offset points",
@@ -207,11 +208,11 @@ def experiment_A():
     fig, ax = plt.subplots(figsize=(6.6, 3.7))
     ax.scatter(xtr, ytr, s=18, color="#8A97A8", alpha=0.65, zorder=2,
                edgecolor="white", linewidth=0.4, label="train (noisy)")
-    ax.plot(grid, target(grid.ravel()), color=INK2, lw=1.4, ls=(0, (5, 3)),
+    ax.plot(grid, target(grid.ravel()), color=INK2, lw=1.6, ls=":",
             zorder=3, label="true function")
     ax.plot(grid, rbf.predict(grid), color=BLUE, lw=2.6, zorder=5,
             label=f"RBF  (test RMSE = {rbf_test:.3f})")
-    ax.plot(grid, mlp.predict(grid), color=ORANGE, lw=2.6, zorder=4,
+    ax.plot(grid, mlp.predict(grid), color=ORANGE, lw=2.6, ls="-.", zorder=4,
             label=f"MLP  (test RMSE = {mlp_test:.3f})")
     ax.set_xlabel("$x$"); ax.set_ylabel("$y$")
     ax.set_title("Both models recover the signal; the difference is training "

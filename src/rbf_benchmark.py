@@ -241,11 +241,16 @@ def fig_ablation(abl):
     logx = {"n_centers": False, "sigma_scale": True, "reg": True}
     fig, axes = plt.subplots(1, 3, figsize=(7.6, 2.9))
     for ax, param in zip(axes, ["n_centers", "sigma_scale", "reg"]):
-        for dname, col in zip(abl, [BLUE, ORANGE]):
+        styles = [("-", "o"), ("--", "s")]
+        for (dname, col), (lsty, mk) in zip(zip(abl, [BLUE, ORANGE]), styles):
             xs, ys = abl[dname][param]
-            ax.plot(xs, ys, "-o", color=col, lw=2.2, ms=5, label=dname)
+            ax.plot(xs, ys, ls=lsty, marker=mk, color=col, lw=2.2, ms=5, label=dname)
         if logx[param]:
             ax.set_xscale("log")
+            vals = abl[list(abl)[0]][param][0]
+            ax.set_xticks(vals)
+            ax.set_xticklabels([f"{v:g}" for v in vals])
+            ax.minorticks_off()
         ax.set_title(titles[param], fontsize=9.5, fontweight="bold",
                      color=INK, loc="left")
         ax.set_ylabel("CV RMSE", fontsize=8.5)
@@ -285,6 +290,7 @@ def fig_insight(datasets, dn_list, mn_list, R):
 def fig_improvement(rmse_tbl, dn_list):
     variants = ["RBF", "RBF-A", "KRR"]
     cols = [ORANGE, BLUE, VIOLET]
+    hatches = ["", "////", "...."]
     x = np.arange(len(dn_list))
     w = 0.26
     fig, ax = plt.subplots(figsize=(7.6, 3.4))
@@ -293,6 +299,7 @@ def fig_improvement(rmse_tbl, dn_list):
         rf = [rmse_tbl[(dn, "RF")] for dn in dn_list]
         norm = [a / b for a, b in zip(vals, rf)]
         ax.bar(x + (i - 1) * w, norm, w, color=c, zorder=3,
+               hatch=hatches[i], edgecolor="white", linewidth=0.5,
                label={"RBF": "RBF (classic)", "RBF-A": "RBF-A (proposed)",
                       "KRR": "KRR (kernel limit)"}[v])
     ax.axhline(1.0, color=INK2, lw=1, ls="--", zorder=2)
