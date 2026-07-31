@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "Radial Basis Function Networks: A Reproducible Benchmark and the Role of Adaptive Widths"
+type: software
+authors:
+  - family-names: Vilca-Solorzano
+    given-names: Richar Andre
+    orcid: "https://orcid.org/0009-0003-2385-5263"
+  - family-names: Yana-Yucra
+    given-names: Dina Maribel
+    orcid: "https://orcid.org/0009-0003-6218-2735"
+  - family-names: Herrera-Urtiaga
+    given-names: Alain Paul
+    orcid: "https://orcid.org/0000-0003-1261-2605"
+  - family-names: Mamani-Calisaya
+    given-names: Milton Vladimir
+    orcid: "https://orcid.org/0000-0002-0676-0989"
+year: 2026
+url: "https://github.com/Andre031222/rbf-adaptive-widths-benchmark"
+license: MIT
+keywords:
+  - radial basis function networks
+  - adaptive kernel width
+  - kernel ridge regression
+  - reproducible benchmark
+  - regression
