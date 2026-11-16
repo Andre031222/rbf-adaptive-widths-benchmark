@@ -105,7 +105,6 @@ notebooks/
 data/                  the 8 public datasets used (UCI and open mirrors)
 figures/               all generated figures (PNG)
 results/               results_benchmark.json, stats_full.json (exact metrics)
-references.bib         bibliography (DOI-verified)
 ```
 
 ## Installation
